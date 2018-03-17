@@ -16,36 +16,18 @@ import Foundation
 
 let inputs = Array(readLine()!)
 var stack = [Int]()
-var ranges = [(startIndex: Int, endIndex: Int)]()
-var razors = [(Int)]()
+var razors = [Int]()
 var cuttingCount = 0
 
-//replace expresstion of razor(=="()") with "O"
-var filteredInput = inputs
-for i in 0..<inputs.count{
-    if inputs[i] == "(" && inputs[i+1] == ")"{ //input[i] can't be "(", so inputs[i+1] will never be accessed
-        filteredInput[i] = "O"
-        filteredInput[i+1] = "X"
-    }
-}
-filteredInput = filteredInput.filter{$0 != "X"}
-
-for index in 0..<filteredInput.count{
-    switch filteredInput[index]{
-    case "(":
+for index in 0..<inputs.count{
+    if inputs[index] == "(" && inputs[index + 1] != ")"{
         stack.append(index)
-    case ")":
-        ranges.append((stack.removeLast(), index))
-    case "O":
+    }else if inputs[index] == ")" && inputs[index - 1] == "(" {
         razors.append(index)
-    default:
-        break
+    }else{
+        let startIndex = stack.removeLast()
+        cuttingCount += razors.filter{ $0 > startIndex && $0 < index }.count + 1
     }
-}
-
-for range in ranges{
-    cuttingCount += razors.filter{ $0 > range.startIndex && $0 < range.endIndex }.count + 1
 }
 
 print("\(cuttingCount)")
-
